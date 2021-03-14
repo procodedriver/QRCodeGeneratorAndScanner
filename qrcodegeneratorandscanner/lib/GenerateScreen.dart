@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:flutter/services.dart';
-import 'dart:async';
 import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'dart:async';
 import 'dart:ui';
-import 'dart:io';
 import 'package:flutter/rendering.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 class GenerateScreen extends StatefulWidget {
   @override
@@ -42,7 +42,10 @@ class _GenerateScreenState extends State<GenerateScreen> {
 
   Future<void> _captureAndSharePng() async {
     try {
-
+      RenderRepaintBoundary boundary = globalKey.currentContext.findRenderObject();
+      var image = await boundary.toImage();
+      ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
+      await Share.file('qr code', 'image.png', byteData.buffer.asUint8List(), 'image/png');
     } catch (e) {
       print(e.toString());
     }
